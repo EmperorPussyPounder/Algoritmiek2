@@ -70,7 +70,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         auto coordinaten = make_pair(x,y);
         if ( !integerInBereik("x-coordinaat", x, 0, breedte - 1)
             || !integerInBereik("y-coordinaat", y, 0, hoogte - 1)) return false;
-          //TODO: logica toevoegen als insert aangeeft of ingevulde vakjes legaal zijn.
+        if (!groep.insert(coordinaten)) return false;
         groepWijzer.insert({coordinaten, groep});
       }
     }
