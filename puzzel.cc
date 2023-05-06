@@ -59,11 +59,15 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
       }
     keuzes.erase(Leeg);
     fin >> aantalGroepen;
+    if(!integerPositief("aantalGroepen", aantalGroepen)) return false;
     int aantalGroepVakjes, maxSom, maxVoorkomens,
         x, y;
     for(int i = 0; i < aantalGroepen; ++i)
     {
       fin >> aantalGroepVakjes >> maxSom >> maxVoorkomens;
+      if (!integerPositief("aantalGroepvakjes", aantalGroepVakjes)
+          || !integerPositief("maxSom", maxSom)
+          || !integerPositief("maxVoorkomens", maxVoorkomens)) return false;
       Groep groep(maxSom, maxVoorkomens);
       for(int j = 0; j < aantalGroepVakjes; ++j)
       {
