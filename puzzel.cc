@@ -44,15 +44,16 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
     keuzes.insert(Leeg);
 
     fin >> hoogte >> breedte;
+    set<pair<int,int>> ingevuld;
     if (!integerInBereik(hoogte, MinDimensie, MaxDimensie) ||
         !integerInBereik(breedte, MinDimensie, MaxDimensie)) return false;
-    for (int i = 0; i < hoogte; ++i)
+    for (int j = 0; j < hoogte; ++j)
     {
-        for (int j = 0; j < breedte; ++j)
+        for (int i = 0; i < breedte; ++i)
         {
           fin >> invoer;
           if (!keuzes.count(invoer)) return false;
-          // TODO: benodigde aanpassing aan groepen
+          ingevuld.insert(make_pair(i, j));
           bord[i][j] = invoer;
         }
       }
@@ -71,6 +72,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         if ( !integerInBereik("x-coordinaat", x, 0, breedte - 1)
             || !integerInBereik("y-coordinaat", y, 0, hoogte - 1)) return false;
         if (!groep.insert(coordinaten)) return false;
+        if(ingevuld.count(coordinaten)) if(!groep.erase(coordinaten)) return false;
         groepWijzer.insert({coordinaten, groep});
       }
     }

@@ -23,6 +23,12 @@ Groep::Groep(const int maxSom, const int maxVoorkomens)
 
 bool Groep::insert(pair<int,int> coordinaten)
 {
-// TODO: voer benodigde controles uit, en bij success inserten.
+// TODO: voer benodigde controles uit, en bij success een extra vakje aan mogelijkheden toevoegen.
+  return true;
+}
+
+bool Groep::erase(pair<int,int> coordinaten)
+{
+// TODO: voer benodigde controles uit, en bij success een vakje "invullen", dus verwijderen uit keuzes.
   return true;
 }

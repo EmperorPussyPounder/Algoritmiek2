@@ -13,7 +13,7 @@ class Groep
     Groep ();
     Groep (const int maxSom, const int maxVoorkomens);
     bool insert(pair<int,int> coordinaten);
-    void erase(int input);
+    bool erase(pair<int,int> coordinaten);
 
     // TODO: uw eigen publieke memberfuncties
 
