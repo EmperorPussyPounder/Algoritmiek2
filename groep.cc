@@ -16,4 +16,7 @@ Groep::Groep ()
 //*************************************************************************
 
 // TODO: implementeer de benodigde memberfuncties voor groep
+Groep::Groep(const int maxSom, const int maxVoorkomens)
+{
 
+}

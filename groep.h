@@ -11,6 +11,8 @@ class Groep
 
     // Default constructor
     Groep ();
+    Groep (const int maxSom, const int maxVoorkomens);
+    void erase(int input);
 
     // TODO: uw eigen publieke memberfuncties
 

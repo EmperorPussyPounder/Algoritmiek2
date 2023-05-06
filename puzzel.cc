@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <set>
 #include <ctime>  // voor clock() en clock_t
 #include "standaard.h"
 #include "puzzel.h"
@@ -28,8 +29,52 @@ Puzzel::~Puzzel ()
 
 bool Puzzel::leesInPuzzel (const char* invoerNaam)
 {
-  // TODO: implementeer deze memberfunctie
+    ifstream fin;
+    fin.open (invoerNaam);
+    if (!fin.is_open()) return false;
+    fin >> aantalKeuzes;
+    if(!integerPositief("aantalKeuzes", aantalKeuzes)) return false;
+    int invoer;
+    for (int i = 0; i < aantalKeuzes; ++i)
+    {
+      fin >> invoer;
+      if (keuzes.count(invoer) || !integerPositief("sudokuVakje", invoer)) return false;
+      keuzes.insert(invoer);
+    }
+    keuzes.insert(Leeg);
 
+    fin >> hoogte >> breedte;
+    if (!integerInBereik(hoogte, MinDimensie, MaxDimensie) ||
+        !integerInBereik(breedte, MinDimensie, MaxDimensie)) return false;
+    for (int i = 0; i < hoogte; ++i)
+    {
+        for (int j = 0; j < breedte; ++j)
+        {
+          fin >> invoer;
+          if (!keuzes.count(invoer)) return false;
+          // TODO: benodigde aanpassing aan groepen
+          bord[i][j] = invoer;
+        }
+      }
+    keuzes.erase(Leeg);
+    fin >> aantalGroepen;
+    int aantalGroepVakjes, maxSom, maxVoorkomens,
+        x, y;
+    for(int i = 0; i < aantalGroepen; ++i)
+    {
+      fin >> aantalGroepVakjes >> maxSom >> maxVoorkomens;
+      Groep groep(maxSom, maxVoorkomens);
+      for(int j = 0; j < aantalGroepVakjes; ++j)
+      {
+        fin >> y >> x;
+        auto coordinaten = make_pair(x,y);
+        if ( !integerInBereik("x-coordinaat", x, 0, breedte - 1)
+            || !integerInBereik("y-coordinaat", y, 0, hoogte - 1)) return false;
+          //TODO: logica toevoegen als insert aangeeft of ingevulde vakjes legaal zijn.
+        groepWijzer.insert({coordinaten, groep});
+      }
+    }
+  erIsEenPuzzel = true;
   return true;
 
 }  // leesInPuzzel
@@ -38,7 +83,19 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
 
 void Puzzel::drukAfPuzzel ()
 {
-  // TODO: implementeer deze memberfunctie
+  if (!erIsEenPuzzel)
+  {
+    cout << "Er is geen geldige puzzel.\n";
+    return;
+  }
+  for (int i = 0; i < breedte; ++i)
+  {
+    for (int j = 0; j < hoogte; ++j)
+    {
+       cout << " " << ((bord[i][j]) ? to_string(bord[i][j]) : "_") << " ";
+    }
+    cout << endl;
+  }
 
 }  // drukAfPuzzel
 
@@ -47,6 +104,21 @@ void Puzzel::drukAfPuzzel ()
 void Puzzel::drukAfInhoud ()
 {
   // TODO: implementeer deze memberfunctie
+  if (!erIsEenPuzzel)
+  {
+    cout << "Er is geen geldige puzzel.\n";
+    return;
+  }
+
+  for (int i = 0; i < breedte; ++i)
+  {
+    for (int j = 0; j < hoogte; ++j)
+    {
+       cout << " " << ((bord[i][j]) ? to_string(bord[i][j]) : "_") << " ";
+    }
+    cout << endl;
+  }
+
 
 }  // drukAfInhoud
 
