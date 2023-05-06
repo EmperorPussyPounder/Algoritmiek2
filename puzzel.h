@@ -5,10 +5,12 @@
 
 #include <unordered_set>
 #include <map>
+#include <vector>
 #include "constantes.h"
 #include "groep.h"
 
-typedef map<pair<int,int>,Groep> groupmap;
+
+typedef map<pair<int,int>, vector<Groep>> groupmap;
 
 class Puzzel
 { public:
@@ -185,7 +187,7 @@ class Puzzel
     bool erIsEenPuzzel = false;
     unordered_set<int> keuzes;
     // TODO: maak van de map een map dat de groep zelf retourneert
-    groupmap groepWijzer;
+    groupmap groepenWijzer;
     // TODO: uw eigen private memberfuncties en -variabelen
 
 };

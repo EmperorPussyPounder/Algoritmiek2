@@ -78,9 +78,14 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
             || !integerInBereik("y-coordinaat", y, 0, hoogte - 1)) return false;
         if (!groep.insert(coordinaten)) return false;
         if(ingevuld.count(coordinaten)) if(!groep.erase(coordinaten)) return false;
-        groepWijzer.insert({coordinaten, groep});
-      }
+        if(!groepenWijzer.count(coordinaten))
+        {
+          vector<Groep> groepenLijst({groep});
+          groepenWijzer.insert({coordinaten, groepenLijst});
+        }
+        else groepenWijzer[coordinaten].push_back(groep);
     }
+  }
   erIsEenPuzzel = true;
   return true;
 
