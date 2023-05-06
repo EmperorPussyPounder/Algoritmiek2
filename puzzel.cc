@@ -62,6 +62,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
     if(!integerPositief("aantalGroepen", aantalGroepen)) return false;
     int aantalGroepVakjes, maxSom, maxVoorkomens,
         x, y;
+    Groep::setDomain(keuzes);
     for(int i = 0; i < aantalGroepen; ++i)
     {
       fin >> aantalGroepVakjes >> maxSom >> maxVoorkomens;

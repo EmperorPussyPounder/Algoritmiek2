@@ -6,7 +6,7 @@
 #include "groep.h"
 
 //*************************************************************************
-
+unordered_set<int> Groep::keuzes{};
 Groep::Groep ()
 {
   // TODO: implementeer zo nodig deze constructor
@@ -31,4 +31,9 @@ bool Groep::erase(pair<int,int> coordinaten)
 {
 // TODO: voer benodigde controles uit, en bij success een vakje "invullen", dus verwijderen uit keuzes.
   return true;
+}
+
+void Groep::setDomain(unordered_set<int> domein)
+{
+  keuzes = domein;
 }
