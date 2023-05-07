@@ -44,7 +44,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
     keuzes.insert(Leeg);
 
     fin >> hoogte >> breedte;
-    set<pair<int,int>> ingevuld;
+    vector<pair<int,int>> ingevuld;
     if (!integerInBereik(hoogte, MinDimensie, MaxDimensie) ||
         !integerInBereik(breedte, MinDimensie, MaxDimensie)) return false;
     for (int j = 0; j < hoogte; ++j)
@@ -53,7 +53,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         {
           fin >> invoer;
           if (!keuzes.count(invoer)) return false;
-          ingevuld.insert(make_pair(i, j));
+          if (invoer) ingevuld.push_back(make_pair(i, j));
           bord[i][j] = invoer;
         }
       }
@@ -76,8 +76,6 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         auto coordinaten = make_pair(x,y);
         if ( !integerInBereik("x-coordinaat", x, 0, breedte - 1)
             || !integerInBereik("y-coordinaat", y, 0, hoogte - 1)) return false;
-        if (!groep.insert(coordinaten)) return false;
-        if(ingevuld.count(coordinaten)) if(!groep.erase(coordinaten)) return false;
         if(!groepenWijzer.count(coordinaten))
         {
           vector<Groep> groepenLijst({groep});
@@ -86,6 +84,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         else groepenWijzer[coordinaten].push_back(groep);
     }
   }
+  //TODO: vul gevonden waardes in en controlleer of deze geldig zijn.
   erIsEenPuzzel = true;
   return true;
 
@@ -95,20 +94,6 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
 
 void Puzzel::drukAfPuzzel ()
 {
-  if (!erIsEenPuzzel)
-  {
-    cout << "Er is geen geldige puzzel.\n";
-    return;
-  }
-  for (int i = 0; i < breedte; ++i)
-  {
-    for (int j = 0; j < hoogte; ++j)
-    {
-       cout << " " << ((bord[i][j]) ? to_string(bord[i][j]) : "_") << " ";
-    }
-    cout << endl;
-  }
-
 }  // drukAfPuzzel
 
 //*************************************************************************
@@ -122,9 +107,9 @@ void Puzzel::drukAfInhoud ()
     return;
   }
 
-  for (int i = 0; i < breedte; ++i)
+  for (int j = 0; j < breedte; ++j)
   {
-    for (int j = 0; j < hoogte; ++j)
+    for (int i = 0; i < hoogte; ++i)
     {
        cout << " " << ((bord[i][j]) ? to_string(bord[i][j]) : "_") << " ";
     }
@@ -146,8 +131,7 @@ void Puzzel::drukAfOplossing (int oplossing[MaxDimensie][MaxDimensie])
 
 int Puzzel::getWaarde (int rij, int kolom)
 {
-  // TODO: implementeer deze memberfunctie
-
+  if (bord[kolom][rij]) return bord[kolom][rij];
   return GeenWaarde;
 
 }  // getWaarde
@@ -157,7 +141,19 @@ int Puzzel::getWaarde (int rij, int kolom)
 bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 {
   // TODO: implementeer deze memberfunctie
+  auto coordinaten = make_pair(kolom,rij);
+  // TODO: deze lijn hier maakt elke keer een kopie van de originele groepen
+  // maar we willen de originele groep. Fix dit
+  auto groepen = groepenWijzer[coordinaten];
+  Groep::commit = true;
+  for (auto groep : groepen) groep.insert(coordinaten, nwWaarde);
 
+  if (Groep::commit)
+  {
+    for (auto groep : groepen) groep.commitInsert(coordinaten, nwWaarde);
+    bord[kolom][rij] = nwWaarde;
+    return true;
+  }
   return false;
 
 }  // vulWaardeIn
@@ -166,8 +162,17 @@ bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 
 bool Puzzel::haalWaardeWeg (int rij, int kolom)
 {
-  // TODO: implementeer deze memberfunctie
+  auto coordinaten = make_pair(kolom, rij);
+  auto groepen = groepenWijzer[coordinaten];
+  Groep::commit = true;
+  for (auto &groep : groepen) groep.erase(coordinaten);
 
+  if (Groep::commit)
+  {
+    for(auto &groep : groepen) groep.commitErase(coordinaten);
+    bord[kolom][rij] = Leeg;
+    return true;
+  }
   return false;
 
 }  // haalWaardeWeg
