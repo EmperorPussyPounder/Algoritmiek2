@@ -50,7 +50,6 @@ void Groep::commitInsert(pair<int,int> coordinaten, int waarde)
 {
     ingevuldeVakjes.insert({coordinaten, waarde});
     --invulbareWaardes[waarde];
-    cout << invulbareWaardes[waarde] << endl;
     somResterend -= waarde;
 }
 
@@ -58,6 +57,6 @@ void Groep::commitErase(pair<int,int> coordinaten)
 {
   auto ondoeWaarde = ingevuldeVakjes[coordinaten];
   somResterend += ondoeWaarde;
-  invulbareWaardes[ondoeWaarde]++;
+  ++invulbareWaardes[ondoeWaarde];
   ingevuldeVakjes.erase(coordinaten);
 }

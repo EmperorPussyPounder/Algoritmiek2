@@ -100,7 +100,6 @@ void Puzzel::drukAfPuzzel ()
 
 void Puzzel::drukAfInhoud ()
 {
-  // TODO: implementeer deze memberfunctie
   if (!erIsEenPuzzel)
   {
     cout << "Er is geen geldige puzzel.\n";
@@ -140,10 +139,7 @@ int Puzzel::getWaarde (int rij, int kolom)
 
 bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 {
-  // TODO: implementeer deze memberfunctie
   auto coordinaten = make_pair(kolom,rij);
-  // TODO: deze lijn hier maakt elke keer een kopie van de originele groepen
-  // maar we willen de originele groep. Fix dit
   auto & groepen = groepenWijzer[coordinaten];
   Groep::commit = true;
   for (auto groep : groepen) groep->insert(coordinaten, nwWaarde);
