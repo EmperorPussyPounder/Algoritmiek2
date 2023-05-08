@@ -139,6 +139,8 @@ int Puzzel::getWaarde (int rij, int kolom)
 
 bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 {
+  if (!integerInBereik("Rij", rij, 0, kolom - 1)
+      || !integerInBereik("Kolom", kolom, 0, rij - 1)) return false;
   auto coordinaten = make_pair(kolom,rij);
   auto & groepen = groepenWijzer[coordinaten];
   Groep::commit = true;
@@ -158,6 +160,8 @@ bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 
 bool Puzzel::haalWaardeWeg (int rij, int kolom)
 {
+  if (!integerInBereik("Rij", rij, 0, kolom - 1)
+      || !integerInBereik("Kolom", kolom, 0, rij - 1)) return false;
   auto coordinaten = make_pair(kolom, rij);
   auto & groepen = groepenWijzer[coordinaten];
   Groep::commit = true;
