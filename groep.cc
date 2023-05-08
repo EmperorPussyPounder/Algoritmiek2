@@ -33,7 +33,6 @@ void Groep::insert(pair<int,int> coordinaten, int waarde)
       &&   keuzes.count(waarde)
       &&   invulbareWaardes[waarde]
       &&   somResterend - waarde >= 0);
-  for (auto &elem : invulbareWaardes) cout << elem.first << ", " << elem.second << endl;
 }
 
 void Groep::erase(pair<int,int> coordinaten)
