@@ -10,7 +10,7 @@
 #include "groep.h"
 
 
-typedef map<pair<int,int>, vector<Groep>> groupmap;
+typedef map<pair<int,int>, vector<Groep*>> groupmap;
 
 class Puzzel
 { public:

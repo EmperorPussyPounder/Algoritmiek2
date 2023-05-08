@@ -69,7 +69,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
       if (!integerPositief("aantalGroepvakjes", aantalGroepVakjes)
           || !integerPositief("maxSom", maxSom)
           || !integerPositief("maxVoorkomens", maxVoorkomens)) return false;
-      Groep groep(maxSom, maxVoorkomens);
+      auto groep = new Groep(maxSom, maxVoorkomens);
       for(int j = 0; j < aantalGroepVakjes; ++j)
       {
         fin >> y >> x;
@@ -78,7 +78,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
             || !integerInBereik("y-coordinaat", y, 0, hoogte - 1)) return false;
         if(!groepenWijzer.count(coordinaten))
         {
-          vector<Groep> groepenLijst({groep});
+          vector<Groep*> groepenLijst({groep});
           groepenWijzer.insert({coordinaten, groepenLijst});
         }
         else groepenWijzer[coordinaten].push_back(groep);
@@ -144,13 +144,13 @@ bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
   auto coordinaten = make_pair(kolom,rij);
   // TODO: deze lijn hier maakt elke keer een kopie van de originele groepen
   // maar we willen de originele groep. Fix dit
-  auto groepen = groepenWijzer[coordinaten];
+  auto & groepen = groepenWijzer[coordinaten];
   Groep::commit = true;
-  for (auto groep : groepen) groep.insert(coordinaten, nwWaarde);
+  for (auto groep : groepen) groep->insert(coordinaten, nwWaarde);
 
   if (Groep::commit)
   {
-    for (auto groep : groepen) groep.commitInsert(coordinaten, nwWaarde);
+    for (auto groep : groepen) groep->commitInsert(coordinaten, nwWaarde);
     bord[kolom][rij] = nwWaarde;
     return true;
   }
@@ -163,13 +163,13 @@ bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 bool Puzzel::haalWaardeWeg (int rij, int kolom)
 {
   auto coordinaten = make_pair(kolom, rij);
-  auto groepen = groepenWijzer[coordinaten];
+  auto & groepen = groepenWijzer[coordinaten];
   Groep::commit = true;
-  for (auto &groep : groepen) groep.erase(coordinaten);
+  for (auto groep : groepen) groep->erase(coordinaten);
 
   if (Groep::commit)
   {
-    for(auto &groep : groepen) groep.commitErase(coordinaten);
+    for(auto groep : groepen) groep->commitErase(coordinaten);
     bord[kolom][rij] = Leeg;
     return true;
   }
