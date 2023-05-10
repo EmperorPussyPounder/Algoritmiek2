@@ -51,13 +51,11 @@ void Groep::commitInsert(pair<int,int> coordinaten, int waarde)
     ingevuldeVakjes.insert({coordinaten, waarde});
     --invulbareWaardes[waarde];
     somResterend -= waarde;
-    if(!invulbareWaardes[waarde]) keuzes.erase(waarde);
 }
 
 void Groep::commitErase(pair<int,int> coordinaten)
 {
   auto ondoeWaarde = ingevuldeVakjes[coordinaten];
-  if(!invulbareWaardes[ondoeWaarde]) keuzes.insert(ondoeWaarde);
   somResterend += ondoeWaarde;
   ++invulbareWaardes[ondoeWaarde];
   ingevuldeVakjes.erase(coordinaten);

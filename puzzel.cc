@@ -91,7 +91,6 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
     auto invoerWaarde = vakInvoer.second;
     auto rij = vakje.second;
     auto kolom = vakje.first;
-    cout << "Er is nog niets fout gegaan. Coordinaten: (" << kolom << ", " << rij << "), waarde: " << invoerWaarde << endl;
     erIsEenPuzzel = erIsEenPuzzel && vulWaardeIn(rij, kolom, invoerWaarde);
     if(!erIsEenPuzzel) return false;
   }
