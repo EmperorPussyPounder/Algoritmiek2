@@ -44,7 +44,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
     keuzes.insert(Leeg);
 
     fin >> hoogte >> breedte;
-    vector<pair<int,int>> ingevuld;
+    vector<pair<pair<int,int>, int>> ingevuld;
     if (!integerInBereik(hoogte, MinDimensie, MaxDimensie) ||
         !integerInBereik(breedte, MinDimensie, MaxDimensie)) return false;
     for (int j = 0; j < hoogte; ++j)
@@ -53,8 +53,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         {
           fin >> invoer;
           if (!keuzes.count(invoer)) return false;
-          if (invoer) ingevuld.push_back(make_pair(i, j));
-          bord[i][j] = invoer;
+          if (invoer) ingevuld.push_back(make_pair(make_pair(i, j),invoer));
         }
       }
     keuzes.erase(Leeg);
@@ -84,8 +83,18 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         else groepenWijzer[coordinaten].push_back(groep);
     }
   }
-  //TODO: vul gevonden waardes in en controlleer of deze geldig zijn.
+  //TODO: vul gevonden waardes in en controleer of deze geldig zijn.
   erIsEenPuzzel = true;
+  for (auto & vakInvoer : ingevuld)
+  {
+    auto vakje = vakInvoer.first;
+    auto invoerWaarde = vakInvoer.second;
+    auto rij = vakje.second;
+    auto kolom = vakje.first;
+    cout << "Er is nog niets fout gegaan. Coordinaten: (" << kolom << ", " << rij << "), waarde: " << invoerWaarde << endl;
+    erIsEenPuzzel = erIsEenPuzzel && vulWaardeIn(rij, kolom, invoerWaarde);
+    if(!erIsEenPuzzel) return false;
+  }
   return true;
 
 }  // leesInPuzzel
