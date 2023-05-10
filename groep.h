@@ -9,6 +9,8 @@
 #include <map>
 using namespace std;
 
+typedef unordered_set<int> my_set;
+
 class Groep
 { public:
 
@@ -21,13 +23,16 @@ class Groep
     static bool commit;
     void commitInsert(pair<int,int> coordinaten, int waarde);
     void commitErase(pair<int,int> coordinaten);
+    my_set getResterendeKeuzes();
+
     // TODO: uw eigen publieke memberfuncties
 
   private:
     map<int, int> invulbareWaardes;
     map<pair<int,int>,int> ingevuldeVakjes;
     int somResterend;
-    static unordered_set<int> keuzes;
+    static my_set keuzes;
+    my_set resterendeKeuzes;
     // TODO: uw eigen private memberfuncties en -variabelen
 
 };

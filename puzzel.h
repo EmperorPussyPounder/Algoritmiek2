@@ -11,6 +11,7 @@
 
 
 typedef map<pair<int,int>, vector<Groep*>> groupmap;
+typedef unordered_set<int> my_set;
 
 class Puzzel
 { public:
@@ -180,15 +181,16 @@ class Puzzel
     bool maakPuzzelMetWaardeReeksGretig  (const char* invoerNaam);
 
   private:
+
     int hoogte, breedte,
         aantalKeuzes, aantalGroepen;    // dimensies van de puzzel
 // bijvoorbeeld een 2-dimensionaal array voor de inhoud van de puzzel
     int bord[MaxDimensie][MaxDimensie];
     bool erIsEenPuzzel = false;
     unordered_set<int> keuzes;
-    // TODO: maak van de map een map dat de groep zelf retourneert
+
     groupmap groepenWijzer;
-    // TODO: uw eigen private memberfuncties en -variabelen
+    my_set intersect(my_set, my_set);
 
 };
 

@@ -187,6 +187,16 @@ bool Puzzel::haalWaardeWeg (int rij, int kolom)
 
 //*************************************************************************
 
+my_set Puzzel::intersect(my_set A, my_set B)
+{
+  my_set intersection;
+  for (auto & elem : A)
+  {
+    if (B.count(elem)) intersection.insert(elem);
+  }
+  return intersection;
+}
+
 bool Puzzel::bepaalOplossingBT (bool slim,
                          int oplossing[MaxDimensie][MaxDimensie],
                          long long &aantalDeeloplossingen)

@@ -6,11 +6,10 @@
 #include "groep.h"
 
 //*************************************************************************
-unordered_set<int> Groep::keuzes{};
+my_set Groep::keuzes{};
 bool Groep::commit = true;
 Groep::Groep ()
 {
-  // TODO: implementeer zo nodig deze constructor
 
 }  // default constructor
 
@@ -23,6 +22,7 @@ Groep::Groep(const int maxSom, const int maxVoorkomens)
   {
     invulbareWaardes.insert({keys, maxVoorkomens});
   }
+  resterendeKeuzes = keuzes;
   somResterend = maxSom;
 }
 
@@ -30,8 +30,7 @@ void Groep::insert(pair<int,int> coordinaten, int waarde)
 {
   commit =  commit
       && (!ingevuldeVakjes.count(coordinaten)
-      &&   keuzes.count(waarde)
-      &&   invulbareWaardes[waarde]
+      &&   resterendeKeuzes.count(waarde)
       &&   somResterend - waarde >= 0);
 }
 
@@ -41,7 +40,7 @@ void Groep::erase(pair<int,int> coordinaten)
   commit &= ingevuldeVakjes.count(coordinaten);
 }
 
-void Groep::setDomain(unordered_set<int> domein)
+void Groep::setDomain(my_set domein)
 {
   keuzes = domein;
 }
@@ -51,12 +50,19 @@ void Groep::commitInsert(pair<int,int> coordinaten, int waarde)
     ingevuldeVakjes.insert({coordinaten, waarde});
     --invulbareWaardes[waarde];
     somResterend -= waarde;
+    if(!invulbareWaardes[waarde]) resterendeKeuzes.erase(waarde);
 }
 
 void Groep::commitErase(pair<int,int> coordinaten)
 {
   auto ondoeWaarde = ingevuldeVakjes[coordinaten];
+  if(!invulbareWaardes[ondoeWaarde]) resterendeKeuzes.insert(ondoeWaarde);
   somResterend += ondoeWaarde;
   ++invulbareWaardes[ondoeWaarde];
   ingevuldeVakjes.erase(coordinaten);
+}
+
+my_set Groep::getResterendeKeuzes()
+{
+  return resterendeKeuzes;
 }
