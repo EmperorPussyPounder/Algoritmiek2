@@ -20,6 +20,7 @@ class Groep
     void insert(pair<int,int> coordinaten, int waarde);
     void erase(pair<int,int> coordinaten);
     static void setDomain(unordered_set<int> domein);
+    static my_set getDomain();
     static bool commit;
     void commitInsert(pair<int,int> coordinaten, int waarde);
     void commitErase(pair<int,int> coordinaten);

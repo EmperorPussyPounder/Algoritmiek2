@@ -11,6 +11,7 @@ const int MaxDimensie = 12;
 const int MinDimensie = 1;
 const int GeenWaarde = -1;   // een waarde die niet voor kan komen in
                              // een puzzel
+const int GeenMogelijkheden = 0;
 const pair<int,int> GeenVakje = make_pair (-1,-1);  // ongeldig vakje
 const int nrRuns = 100;      // voor het experiment
 

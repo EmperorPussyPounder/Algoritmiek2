@@ -45,6 +45,11 @@ void Groep::setDomain(my_set domein)
   keuzes = domein;
 }
 
+my_set Groep::getDomain()
+{
+  return keuzes;
+}
+
 void Groep::commitInsert(pair<int,int> coordinaten, int waarde)
 {
     ingevuldeVakjes.insert({coordinaten, waarde});

@@ -192,6 +192,7 @@ class Puzzel
     groupmap groepenWijzer;
     my_set intersect(my_set, my_set);
 
+    int mogelijkeInputs(int rij, int kolom);
 };
 
 #endif

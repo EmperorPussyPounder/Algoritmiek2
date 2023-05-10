@@ -83,7 +83,6 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
         else groepenWijzer[coordinaten].push_back(groep);
     }
   }
-  //TODO: vul gevonden waardes in en controleer of deze geldig zijn.
   erIsEenPuzzel = true;
   for (auto & vakInvoer : ingevuld)
   {
@@ -102,6 +101,10 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
 
 void Puzzel::drukAfPuzzel ()
 {
+   if (!erIsEenPuzzel) cout << "Het is niet gelukt een puzzel te laden; ";
+   cout << "Er zijn " << aantalKeuzes << " invulbare waardes zijn: ";
+   for (const auto & waarde : Groep::getDomain()) cout << waarde << ", ";
+   cout << "met " << aantalGroepen << " groepen" << endl;
 }  // drukAfPuzzel
 
 //*************************************************************************
@@ -195,6 +198,18 @@ my_set Puzzel::intersect(my_set A, my_set B)
     if (B.count(elem)) intersection.insert(elem);
   }
   return intersection;
+}
+
+int Puzzel::mogelijkeInputs(int rij, int kolom)
+{
+  auto x = kolom;
+  auto y = rij;
+  if (!bord[x][y]) return GeenMogelijkheden;
+  auto groepen = groepenWijzer[make_pair(x,y)];
+  auto opties = groepen[0]->getResterendeKeuzes();
+  for (auto & groep : groepen) opties = intersect(opties, groep->getResterendeKeuzes());
+  return opties.size();
+
 }
 
 bool Puzzel::bepaalOplossingBT (bool slim,
