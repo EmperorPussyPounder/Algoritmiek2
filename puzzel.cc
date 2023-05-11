@@ -291,6 +291,7 @@ bool Puzzel::bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie
       vulWaardeIn(rij, kolom, invul);
       it = invoerLijst.erase(it);
       auto succes = bepaalOplossingBT(slim, oplossing, aantalDeeloplossingen, invoerLijst);
+      haalWaardeWeg(rij, kolom);
       if (succes) return true;
       invoerLijst.insert(it, make_pair(kolom, rij));
       cout << (*it).first << ", " << (*it).second << " are back in their original place. \n";
