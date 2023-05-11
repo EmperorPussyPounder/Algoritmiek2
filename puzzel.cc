@@ -255,15 +255,10 @@ void Puzzel::sorteer(vector<pair<int,int>> lijst)
     }
     else emmers[aantalMogelijkheden].push_back(vakje);
   }
-  // TODO: vind een betere manier om door waardes heen te gaan
-  auto aantalEmmers = 99999;
   lijst.clear();
-  for(auto i = 1; i <= aantalEmmers; ++i)
+  for(auto & emmer : emmers)
   {
-    if(emmers.count(i))
-    {
-      for(auto & vakje : emmers[i]) lijst.push_back(vakje);
-    }
+    for(auto & vakje : emmer.second) lijst.push_back(vakje);
   }
 }
 
