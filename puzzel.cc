@@ -266,9 +266,7 @@ bool Puzzel::bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie
                                long long &aantalDeeloplossingen, vector<pair<int, int>> invoerLijst)
 {
   ++aantalDeeloplossingen;
-  cout << "Poepie \n";
-  for(auto & coordinaten : invoerLijst) cout << coordinaten.first << ", " << coordinaten.second << endl;
-  if (invoerLijst.empty())
+  if (ingevuld.size() == hoogte*breedte)
   {
     for(int x = 0; x < breedte; ++x)
     {
@@ -283,18 +281,16 @@ bool Puzzel::bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie
   if(slim) sorteer(invoerLijst);
   for(auto it = invoerLijst.begin(); it != invoerLijst.end(); ++it)
   {
+    if(ingevuld.count((*it))) continue;
     auto kolom = (*it).first;
     auto rij = (*it).second;
     auto invulWaardes = mogelijkeInputs(kolom, rij);
     for (auto & invul : invulWaardes)
     {
-      vulWaardeIn(rij, kolom, invul);
-      it = invoerLijst.erase(it);
+      if(!vulWaardeIn(rij, kolom, invul)) continue;
       auto succes = bepaalOplossingBT(slim, oplossing, aantalDeeloplossingen, invoerLijst);
       haalWaardeWeg(rij, kolom);
       if (succes) return true;
-      invoerLijst.insert(it, make_pair(kolom, rij));
-      cout << (*it).first << ", " << (*it).second << " are back in their original place. \n";
     }
   }
   return false;
