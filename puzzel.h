@@ -197,7 +197,7 @@ class Puzzel
     bool eindeSpel();
     bool bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie],
                            long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst);
-    void sorteer(vector<pair<int,int>> &lijst);
+    void sorteer(vector<pair<int,int>> lijst);
 };
 
 #endif
