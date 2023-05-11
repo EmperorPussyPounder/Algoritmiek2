@@ -187,12 +187,17 @@ class Puzzel
 // bijvoorbeeld een 2-dimensionaal array voor de inhoud van de puzzel
     int bord[MaxDimensie][MaxDimensie];
     bool erIsEenPuzzel = false;
-    unordered_set<int> keuzes;
+    my_set keuzes;
+    set<pair<int,int>> ingevuld;
 
     groupmap groepenWijzer;
-    my_set intersect(my_set, my_set);
+    my_set intersect(my_set A, my_set B);
 
-    int mogelijkeInputs(int rij, int kolom);
+    my_set mogelijkeInputs(int x, int y);
+    bool eindeSpel();
+    bool bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie],
+                           long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst);
+    void sorteer(vector<pair<int,int>> &lijst);
 };
 
 #endif

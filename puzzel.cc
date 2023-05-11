@@ -29,6 +29,13 @@ Puzzel::~Puzzel ()
 
 bool Puzzel::leesInPuzzel (const char* invoerNaam)
 {
+    for(int x = 0; x < MaxDimensie; ++x)
+    {
+      for(int y = 0; y < MaxDimensie; ++y)
+      {
+        bord[x][y] = Leeg;
+      }
+    }
     ifstream fin;
     fin.open (invoerNaam);
     if (!fin.is_open()) return false;
@@ -84,6 +91,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
     }
   }
   erIsEenPuzzel = true;
+
   for (auto & vakInvoer : ingevuld)
   {
     auto vakje = vakInvoer.first;
@@ -150,9 +158,10 @@ int Puzzel::getWaarde (int rij, int kolom)
 
 bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 {
-  if (!integerInBereik("Rij", rij, 0, hoogte - 1)
-      || !integerInBereik("Kolom", kolom, 0, breedte - 1)) return false;
   auto coordinaten = make_pair(kolom,rij);
+  if (!integerInBereik("Rij", rij, 0, hoogte - 1)
+      || !integerInBereik("Kolom", kolom, 0, breedte - 1)
+      || ingevuld.count(coordinaten)) return false;
   auto & groepen = groepenWijzer[coordinaten];
   Groep::commit = true;
   for (auto groep : groepen) groep->insert(coordinaten, nwWaarde);
@@ -160,6 +169,7 @@ bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
   if (Groep::commit)
   {
     for (auto groep : groepen) groep->commitInsert(coordinaten, nwWaarde);
+    ingevuld.insert(coordinaten);
     bord[kolom][rij] = nwWaarde;
     return true;
   }
@@ -171,9 +181,10 @@ bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
 
 bool Puzzel::haalWaardeWeg (int rij, int kolom)
 {
-  if (!integerInBereik("Rij", rij, 0, hoogte - 1)
-      || !integerInBereik("Kolom", kolom, 0, breedte - 1)) return false;
   auto coordinaten = make_pair(kolom, rij);
+  if (!integerInBereik("Rij", rij, 0, hoogte - 1)
+      || !integerInBereik("Kolom", kolom, 0, breedte - 1)
+      || !ingevuld.count(coordinaten)) return false;
   auto & groepen = groepenWijzer[coordinaten];
   Groep::commit = true;
   for (auto groep : groepen) groep->erase(coordinaten);
@@ -181,6 +192,7 @@ bool Puzzel::haalWaardeWeg (int rij, int kolom)
   if (Groep::commit)
   {
     for(auto groep : groepen) groep->commitErase(coordinaten);
+    ingevuld.erase(coordinaten);
     bord[kolom][rij] = Leeg;
     return true;
   }
@@ -200,27 +212,92 @@ my_set Puzzel::intersect(my_set A, my_set B)
   return intersection;
 }
 
-int Puzzel::mogelijkeInputs(int rij, int kolom)
+my_set Puzzel::mogelijkeInputs(int x, int y)
 {
-  auto x = kolom;
-  auto y = rij;
-  if (!bord[x][y]) return GeenMogelijkheden;
+  if (ingevuld.count(make_pair(x,y))) return GeenMogelijkheden;
   auto groepen = groepenWijzer[make_pair(x,y)];
   auto opties = groepen[0]->getResterendeKeuzes();
   for (auto & groep : groepen) opties = intersect(opties, groep->getResterendeKeuzes());
-  return opties.size();
+  return opties;
 
+}
+
+bool Puzzel::eindeSpel()
+{
+  for (int j = 0; j < hoogte; ++j)
+  {
+    for (int i = 0; i < breedte; ++i)
+    {
+      if (bord[i][j] == Leeg) return false;
+    }
+  }
+  return true;
+}
+
+void Puzzel::sorteer(vector<pair<int,int>> &lijst)
+{
+  return;
 }
 
 bool Puzzel::bepaalOplossingBT (bool slim,
                          int oplossing[MaxDimensie][MaxDimensie],
                          long long &aantalDeeloplossingen)
 {
-  // TODO: implementeer deze memberfunctie
+  // TODO: maak deze invoerlijst elders aan en maak het een field van de class
+  aantalDeeloplossingen = 0;
+  if(!erIsEenPuzzel) return false;
+  vector<pair<int, int>> invoerLijst;
+  if(slim) sorteer(invoerLijst);
+  for (int j = 0; j < hoogte; ++j)
+  {
+    for (int i = 0; i < breedte; ++i)
+    {
+      auto coordinaten = make_pair(i, j);
+      if (!ingevuld.count(coordinaten)) invoerLijst.push_back(coordinaten);
+    }
+  }
 
-  return false;
+
+  return bepaalOplossingBT(slim, oplossing, aantalDeeloplossingen, invoerLijst);
 
 }  // bepaalOplossingBT
+
+bool Puzzel::bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie],
+                               long long &aantalDeeloplossingen, vector<pair<int, int>> invoerLijst)
+{
+  ++aantalDeeloplossingen;
+  cout << "Poepie \n";
+  for(auto & coordinaten : invoerLijst) cout << coordinaten.first << ", " << coordinaten.second << endl;
+  if (invoerLijst.empty())
+  {
+    for(int x = 0; x < breedte; ++x)
+    {
+      for (int y = 0; y < hoogte; ++y)
+      {
+        oplossing[x][y] = bord[x][y];
+      }
+    }
+    return true;
+  }
+
+  if(slim) sorteer(invoerLijst);
+  for(auto it = invoerLijst.begin(); it != invoerLijst.end(); ++it)
+  {
+    auto kolom = (*it).first;
+    auto rij = (*it).second;
+    auto invulWaardes = mogelijkeInputs(kolom, rij);
+    for (auto & invul : invulWaardes)
+    {
+      vulWaardeIn(rij, kolom, invul);
+      it = invoerLijst.erase(it);
+      auto succes = bepaalOplossingBT(slim, oplossing, aantalDeeloplossingen, invoerLijst);
+      if (succes) return true;
+      invoerLijst.insert(it, make_pair(kolom, rij));
+      cout << (*it).first << ", " << (*it).second << " are back in their original place. \n";
+    }
+  }
+  return false;
+}
 
 //*************************************************************************
 
