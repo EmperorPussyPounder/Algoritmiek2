@@ -349,10 +349,10 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
   ++aantalDeeloplossingen;
   if(slim) sorteer(invulVolgorde);
   auto gretig = false;
-  my_set volgende;
+  auto volgende = 0;
   if(!waardeVolgorde.empty())
   {
-    volgende.insert(waardeVolgorde[0]);
+    volgende = waardeVolgorde[0];
     waardeVolgorde.erase(waardeVolgorde.begin());
     gretig = true;
   }
@@ -361,9 +361,22 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
     auto vakje = invulVolgorde[i];
     auto rij = vakje.second;
     auto kolom = vakje.first;
-    auto keuzes = (gretig) ? volgende : mogelijkeInputs(kolom, rij);
+    auto keuzes =  mogelijkeInputs(kolom, rij);
+    if(gretig) keuzes.erase(volgende);
     if (bord[kolom][rij] == Leeg)
     {
+      if(gretig && vulWaardeIn(rij, kolom, volgende))
+      {
+        auto succesvol = bepaalOplossingBT(slim, oplossing,
+                                             aantalDeeloplossingen,
+                                             invulVolgorde,
+                                             aantalOplossingen, doorstroom,
+                                             waardeVolgorde, start);
+
+        if(succesvol) return true;
+        haalWaardeWeg(rij, kolom);
+      }
+
         for (auto waarde : keuzes)
         {
           if (vulWaardeIn(rij, kolom, waarde))
@@ -382,6 +395,9 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
             }
           }
         }
+        drukAfInhoud();
+        cout << "------------------------\n";
+        cout << "heeft gefaald. \n";
         return false;
       }
   }
