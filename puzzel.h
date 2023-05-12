@@ -182,26 +182,71 @@ class Puzzel
 
   private:
 
-    int hoogte, breedte,
-        aantalKeuzes, aantalGroepen,    // dimensies van de puzzel
+    int hoogte, breedte,                 // dimensies van de puzzel
+        aantalKeuzes, aantalGroepen,
         aantalLeeg;
-// bijvoorbeeld een 2-dimensionaal array voor de inhoud van de puzzel
-    int bord[MaxDimensie][MaxDimensie];
-    bool erIsEenPuzzel = false;
-    bool gretigBord = false;
-    my_set keuzes;
-    set<pair<int,int>> ingevuld;
+    int bord[MaxDimensie][MaxDimensie]; // een 2-dimensionaal array voor de inhoud van de puzzel
+    bool erIsEenPuzzel = false;         // Controle of het inlezen succesvol was
+    bool gretigBord = false;            // Construereren we een gretig bord?
+    my_set keuzes;                      // Keuzes van waardes waar de speler uit mag kiezen
+    set<pair<int,int>> ingevuld;        // Houdt bij welke vakjes er ingevuld worden.
 
-    groupmap groepenWijzer;
+    groupmap groepenWijzer;            // Map dat aangeeft welke groepen een vakje toe behoort.
+
+
+    /* Vindt de doorsnede van 2 verzamelingen.
+     * Retourneert de doorsnede van A en B.
+     */
     my_set intersect(my_set A, my_set B);
 
+    /* Vindt de waardes die op coordinaten x,y ingevuld mogen worden
+     * in de huidige toestand van de puzzel.
+     * pre:
+     * - er is een valide puzzel aangemaakt.
+     *
+     * Retourneert de waardes die op de coordinaten nog ingevuld mogen worden.
+     * een set als deze al ingevuld is, of anderszijds geen mogelijkheden meer heeft.
+     */
     my_set mogelijkeInputs(int x, int y);
+
+    /*
+     * helperfunctie voor bepaalOplossingBT
+     * post:
+     * - zelfde als de hoofdfunctie,
+     * daarbij:
+     * - aantalOplossingen is gelijk aan de aantal gevonden oplossingen
+     * retourneert: Of er minstens 1 oplossing gevonden is.
+     */
     bool bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie],
                            long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst,
                            int & aantalOplossingen, bool doorstroom = false,
                            vector<int> waardeVolgorde = GeenVolgorde, int start = 0);
+    /*
+     * sorteer functie (bucket sort)
+     * pre:
+     * - er is een valide puzzel aangemaakt
+     * - lijst is een valide coordinaten lijst van deze puzzel
+     * post:
+     * - lijst is gesorteerd in stijgende volgorde, op basis van optie aantal
+     * van coordinaten.
+     */
     void sorteer(vector<pair<int,int>> lijst);
+
+    /*
+     * Helperfunctie voor het bouwen van een gretig bord
+     * waardeVolgorde geeft de ingelezen volgorde aan die zo veel mogelijk moet voorkomen.
+     * retourneert:
+     * - of het bouwen van een gretig bord succesvol was
+     */
     bool bouwGretigBord(vector<int> waardeVolgorde);
+
+    /*
+     * Brengt een puzzel naar een lege toestand, zonder ingevulde vakjes.
+     * pre:
+     * - er is een valide puzzel aangemaakt
+     * post:
+     * - bord bevat alleen maar nullen binnen de huidige dimensies.
+     */
     void resetBord();
 
 };
