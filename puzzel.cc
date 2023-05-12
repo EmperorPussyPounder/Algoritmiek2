@@ -106,6 +106,7 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
     }
   }
   erIsEenPuzzel = true;
+  aantalLeeg = hoogte*breedte;
   if(!gretigBord)
   {
     for (auto & vakInvoer : ingevuld)
@@ -122,8 +123,6 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
   else
   {
     int oplossing[MaxDimensie][MaxDimensie];
-    const auto reeksAantal = invulVolgorde.size();
-    //TODO: maak deze lijst een field
     vector<pair<int, int>> invoerLijst;
     for (int j = 0; j < hoogte; ++j)
     {
@@ -136,27 +135,49 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
 
     while (!invulVolgorde.empty())
     {
+
       long long aantalDeelOplossingen = 0;
       int aantalOplossingen = 0;
-
-      if(bepaalOplossingBT(false, oplossing, aantalDeelOplossingen,
-                          invoerLijst, aantalOplossingen,
-                          false, invulVolgorde))
-      {
-        cout << "Dit geeft een geldige puzzel met " << invulVolgorde.size()
-            << "/" << reeksAantal << " vakjes ingevuld.\n";
-
-        return true;
-      }
+      if(bouwGretigBord(invulVolgorde)) return true;
+      resetBord();
       invulVolgorde.pop_back();
+    }
+
+  return false;
+  }
+} // leesInPuzzel
+
+//TODO: construeer het eerste bord dat invulVolgorde volledig bevat, waarvoor 1 oplossing bestaat!
+// elementen die eerder in de lijst komen, moeten zo links en boven mogelijk komen
+// return true als er 1 unieke oplossing is
+// return anders false;
+bool Puzzel::bouwGretigBord(vector<int> invulVolgorde)
+{
+  long long aantalDeelOplossingen = 0;
+  int aantalOplossingen = 0;
+  for(auto it = invulVolgorde.begin(); it != invulVolgorde.end(); ++it)
+  {
+    for(auto ystart = 0; ystart < hoogte; ++ystart)
+    {
+      for (auto xstart = 0; xstart < breedte; ++xstart)
+      {
+        for (auto y = ystart; y < hoogte + ystart; ++y)
+        {
+          for (auto x = xstart; x < breedte + xstart; ++x)
+          {
+            auto rij = y % hoogte;
+            auto kolom = x % breedte;
+            if(vulWaardeIn(rij, kolom, (*it)))
+            {
+
+            }
+          }
+        }
+      }
     }
   }
   return false;
 }
-
-
-
-  // leesInPuzzel
 
 void Puzzel::resetBord()
 {
@@ -241,6 +262,7 @@ bool Puzzel::vulWaardeIn (int rij, int kolom, int nwWaarde)
     for (auto groep : groepen) groep->commitInsert(coordinaten, nwWaarde);
     ingevuld.insert(coordinaten);
     bord[kolom][rij] = nwWaarde;
+    --aantalLeeg;
     return true;
   }
   return false;
@@ -264,6 +286,7 @@ bool Puzzel::haalWaardeWeg (int rij, int kolom)
     for(auto groep : groepen) groep->commitErase(coordinaten);
     ingevuld.erase(coordinaten);
     bord[kolom][rij] = Leeg;
+    ++aantalLeeg;
     return true;
   }
   return false;
@@ -341,27 +364,15 @@ bool Puzzel::bepaalOplossingBT (bool slim,
 
 bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensie],
                                 long long &aantalDeeloplossingen, vector<pair<int,int>> invulVolgorde,
-                                int & aantalOplossingen, bool doorstroom,
-                                vector<int> volgorde)
+                                int & aantalOplossingen, bool doorstroom)
 {
-
   ++aantalDeeloplossingen;
-  bool gretigBord = false;
-  my_set singleton;
-  if (!volgorde.empty())
-  {
-    singleton.insert(volgorde.back());
-    for (auto & elem : volgorde) cout << elem << ", ";
-    cout << endl;
-    volgorde.pop_back();
-    gretigBord = true;
-  }
   if(slim) sorteer(invulVolgorde);
   for (auto & vakje : invulVolgorde)
   {
     auto rij = vakje.second;
     auto kolom = vakje.first;
-    auto keuzes = (gretigBord) ? singleton : mogelijkeInputs(kolom, rij);
+    auto keuzes = mogelijkeInputs(kolom, rij);
     if (bord[kolom][rij] == Leeg)
     {
         for (auto waarde : keuzes)
@@ -371,14 +382,10 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
             auto succesvol = bepaalOplossingBT(slim, oplossing,
                                                aantalDeeloplossingen,
                                                invulVolgorde,
-                                               aantalOplossingen, doorstroom,
-                                               volgorde);
-            if(!succesvol || !gretigBord) haalWaardeWeg(rij, kolom);
+                                               aantalOplossingen, doorstroom);
+            haalWaardeWeg(rij, kolom);
             if (succesvol)
             {
-              if (gretigBord) cout << "Hier zou hij niet moeten verwijderen" << endl;
-              drukAfInhoud();
-              cout << "------------------------------------\n";
               if(!doorstroom) return true;
             }
           }
@@ -395,6 +402,11 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
     }
   }
     ++aantalOplossingen;
+//    if (doorstroom)
+//    {
+//      drukAfInhoud();
+//      cout << "------------------------------------\n";
+//    }
     return true;
 }
 

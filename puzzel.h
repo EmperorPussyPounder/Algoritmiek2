@@ -183,7 +183,8 @@ class Puzzel
   private:
 
     int hoogte, breedte,
-        aantalKeuzes, aantalGroepen;    // dimensies van de puzzel
+        aantalKeuzes, aantalGroepen,    // dimensies van de puzzel
+        aantalLeeg;
 // bijvoorbeeld een 2-dimensionaal array voor de inhoud van de puzzel
     int bord[MaxDimensie][MaxDimensie];
     bool erIsEenPuzzel = false;
@@ -197,10 +198,10 @@ class Puzzel
     my_set mogelijkeInputs(int x, int y);
     bool bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie],
                            long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst,
-                           int & aantalOplossingen, bool doorstroom = false,
-                           vector<int> volgorde = GeenVolgorde);
+                           int & aantalOplossingen, bool doorstroom = false);
 
     void sorteer(vector<pair<int,int>> lijst);
+    bool bouwGretigBord(vector<int> invulVolgorde);
     void resetBord();
 
 };
