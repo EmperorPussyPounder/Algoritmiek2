@@ -179,9 +179,9 @@ void Puzzel::drukAfInhoud ()
 
 void Puzzel::drukAfOplossing (int oplossing[MaxDimensie][MaxDimensie])
 {
-  for (int j = 0; j < hoogte; ++j)
+  for (int j = 0; j < breedte; ++j)
   {
-    for (int i = 0; i < breedte; ++i)
+    for (int i = 0; i < hoogte; ++i)
     {
       cout << " " << oplossing[i][j] << " ";
     }
@@ -334,7 +334,7 @@ bool Puzzel::bouwGretigBord(vector<int> waardeVolgorde)
       invoerLijst.push_back(coordinaten);
     }
   }
-
+  cout << "We proberen het met: " << waardeVolgorde.size() << " waardes\n";
   return bepaalOplossingBT(false, oplossing, aantalDeelOplossingen,
                            invoerLijst, aantalOplossingen,
                            false, waardeVolgorde);
