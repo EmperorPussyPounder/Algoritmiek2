@@ -5,6 +5,7 @@
 
 #include <unordered_set>
 #include <map>
+#include <fstream>
 #include <vector>
 #include "constantes.h"
 #include "groep.h"
@@ -182,7 +183,7 @@ class Puzzel
 
   private:
 
-    int hoogte, breedte,                 // dimensies van de puzzel
+    int hoogte = MaxDimensie, breedte = MaxDimensie,                 // dimensies van de puzzel
         aantalKeuzes, aantalGroepen,
         aantalLeeg;
     int bord[MaxDimensie][MaxDimensie]; // een 2-dimensionaal array voor de inhoud van de puzzel
@@ -194,6 +195,18 @@ class Puzzel
     groupmap groepenWijzer;            // Map dat aangeeft welke groepen een vakje toe behoort.
 
 
+
+     /*
+      * Helper functie voor het inlezen van puzzels.
+      * Maakt keuzes aan
+      * post:
+      * - als het inlezen mislukt is drukt het een fout bericht af,
+      * - anders zijn de toegestane waardes van deze puzzel aangemaakt.
+      * retourneert:
+      * true, als het inlezen gelukt is,
+      * false, anders.
+      */
+    bool maakKeuzes(ifstream & fin);
     /* Vindt de doorsnede van 2 verzamelingen.
      * Retourneert de doorsnede van A en B.
      */

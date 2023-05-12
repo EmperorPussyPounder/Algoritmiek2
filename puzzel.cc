@@ -26,30 +26,33 @@ Puzzel::~Puzzel ()
 }  // destructor
 
 //*************************************************************************
-
-bool Puzzel::leesInPuzzel (const char* invoerNaam)
+bool Puzzel::maakKeuzes(ifstream & fin)
 {
-    for(int x = 0; x < MaxDimensie; ++x)
-    {
-      for(int y = 0; y < MaxDimensie; ++y)
-      {
-        bord[x][y] = Leeg;
-      }
-    }
-    ifstream fin;
-    fin.open (invoerNaam);
-    if (!fin.is_open()) return false;
     fin >> aantalKeuzes;
     if(!integerPositief("aantalKeuzes", aantalKeuzes)) return false;
     int invoer;
     for (int i = 0; i < aantalKeuzes; ++i)
     {
       fin >> invoer;
-      if (keuzes.count(invoer) || !integerPositief("sudokuVakje", invoer)) return false;
+      if (keuzes.count(invoer) || !integerPositief("sudokuVakje", invoer))
+      {
+        cout << "Het is niet gelukt de keuzes in te lezen. \n";
+        return false;
+      }
       keuzes.insert(invoer);
     }
-    keuzes.insert(Leeg);
+    return true;
+}
 
+bool Puzzel::leesInPuzzel (const char* invoerNaam)
+{
+    resetBord();
+    ifstream fin;
+    fin.open (invoerNaam);
+    if (!fin.is_open()) return false;
+    if (!maakKeuzes(fin)) return false;
+    keuzes.insert(Leeg);
+    int invoer;
     fin >> hoogte >> breedte;
     vector<pair<pair<int,int>, int>> ingevuld;
     vector<int> invulVolgorde;
