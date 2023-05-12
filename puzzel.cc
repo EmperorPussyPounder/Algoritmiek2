@@ -122,16 +122,6 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
   }
   else
   {
-    vector<pair<int, int>> invoerLijst;
-    for (int j = 0; j < hoogte; ++j)
-    {
-      for (int i = 0; i < breedte; ++i)
-      {
-          auto coordinaten = make_pair(i, j);
-          invoerLijst.push_back(coordinaten);
-      }
-    }
-
     while (!invulVolgorde.empty())
     {
       if(bouwGretigBord(invulVolgorde)) return true;
@@ -141,30 +131,6 @@ bool Puzzel::leesInPuzzel (const char* invoerNaam)
   return false;
   }
 } // leesInPuzzel
-
-//TODO: construeer het eerste bord dat invulVolgorde volledig bevat, waarvoor 1 oplossing bestaat!
-// elementen die eerder in de lijst komen, moeten zo links en boven mogelijk komen
-// return true als er 1 unieke oplossing is
-// return anders false;
-bool Puzzel::bouwGretigBord(vector<int> waardeVolgorde)
-{
-  long long aantalDeelOplossingen = 0;
-  int aantalOplossingen = 0;
-  int oplossing[MaxDimensie][MaxDimensie];
-  vector<pair<int, int>> invoerLijst;
-  for (int j = 0; j < hoogte; ++j)
-  {
-    for (int i = 0; i < breedte; ++i)
-    {
-      auto coordinaten = make_pair(i, j);
-      invoerLijst.push_back(coordinaten);
-    }
-  }
-
-  return bepaalOplossingBT(false, oplossing, aantalDeelOplossingen,
-                           invoerLijst, aantalOplossingen,
-                           false, waardeVolgorde);
-}
 
 void Puzzel::resetBord()
 {
@@ -349,6 +315,31 @@ bool Puzzel::bepaalOplossingBT (bool slim,
 
   return aantalOplossingen;
 }  // bepaalOplossingBT
+
+//TODO: construeer het eerste bord dat invulVolgorde volledig bevat, waarvoor 1 oplossing bestaat!
+// elementen die eerder in de lijst komen, moeten zo links en boven mogelijk komen
+// return true als er 1 unieke oplossing is
+// return anders false;
+bool Puzzel::bouwGretigBord(vector<int> waardeVolgorde)
+{
+  long long aantalDeelOplossingen = 0;
+  int aantalOplossingen = 0;
+  int oplossing[MaxDimensie][MaxDimensie];
+  vector<pair<int, int>> invoerLijst;
+  for (int j = 0; j < hoogte; ++j)
+  {
+    for (int i = 0; i < breedte; ++i)
+    {
+      auto coordinaten = make_pair(i, j);
+      invoerLijst.push_back(coordinaten);
+    }
+  }
+
+  return bepaalOplossingBT(false, oplossing, aantalDeelOplossingen,
+                           invoerLijst, aantalOplossingen,
+                           false, waardeVolgorde);
+}
+
 
 bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensie],
                                 long long &aantalDeeloplossingen, vector<pair<int,int>> invulVolgorde,
