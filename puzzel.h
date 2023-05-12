@@ -200,7 +200,6 @@ class Puzzel
                            long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst,
                            int & aantalOplossingen, bool doorstroom = false,
                            vector<int> waardeVolgorde = GeenVolgorde, int start = 0);
-
     void sorteer(vector<pair<int,int>> lijst);
     bool bouwGretigBord(vector<int> waardeVolgorde);
     void resetBord();

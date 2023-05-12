@@ -350,6 +350,8 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
   if(slim) sorteer(invulVolgorde);
   auto gretig = false;
   auto volgende = 0;
+  const auto START = start;
+  const auto START_WAARDE_VOLGORDE = waardeVolgorde;
   if(!waardeVolgorde.empty())
   {
     volgende = waardeVolgorde[0];
@@ -362,46 +364,38 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
     auto rij = vakje.second;
     auto kolom = vakje.first;
     auto keuzes =  mogelijkeInputs(kolom, rij);
-    if(gretig) keuzes.erase(volgende);
+    if(gretig)
+    {
+      keuzes.erase(volgende);
+      keuzes.insert(volgende);
+    }
     if (bord[kolom][rij] == Leeg)
     {
-      if(gretig && vulWaardeIn(rij, kolom, volgende))
+      if(gretig) start = i;
+      for (auto waarde : keuzes)
       {
-        auto succesvol = bepaalOplossingBT(slim, oplossing,
+        if (vulWaardeIn(rij, kolom, waarde))
+        {
+
+          auto succesvol = bepaalOplossingBT(slim, oplossing,
                                              aantalDeeloplossingen,
                                              invulVolgorde,
                                              aantalOplossingen, doorstroom,
-                                             waardeVolgorde, start);
-
-        if(succesvol) return true;
-        haalWaardeWeg(rij, kolom);
-      }
-
-        for (auto waarde : keuzes)
-        {
-          if (vulWaardeIn(rij, kolom, waarde))
+                                             waardeVolgorde, (start+1));
+          haalWaardeWeg(rij, kolom);
+          if (succesvol)
           {
-
-            auto succesvol = bepaalOplossingBT(slim, oplossing,
-                                               aantalDeeloplossingen,
-                                               invulVolgorde,
-                                               aantalOplossingen, doorstroom,
-                                               waardeVolgorde, start);
-            haalWaardeWeg(rij, kolom);
-            if (succesvol)
-            {
-              if(gretig) vulWaardeIn(rij, kolom, waarde);
-              if(!doorstroom) return true;
-            }
+            if(gretig && waarde == volgende) vulWaardeIn(rij, kolom, waarde);
+            if(!doorstroom) return true;
           }
         }
-        drukAfInhoud();
-        cout << "------------------------\n";
-        cout << "heeft gefaald. \n";
-        return false;
+        waardeVolgorde = START_WAARDE_VOLGORDE;
+        start = START;
       }
+        return false;
+    }
   }
-  if(gretig && (!aantalLeeg || !waardeVolgorde.empty()) ) return false;
+  //if(!waardeVolgorde.empty()) return false;
   for (int rij = 0; rij < hoogte; ++rij)
   {
     for (int kolom = 0; kolom < breedte; ++kolom)
