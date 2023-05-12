@@ -163,9 +163,9 @@ void Puzzel::drukAfInhoud ()
     return;
   }
 
-  for (int j = 0; j < breedte; ++j)
+  for (int j = 0; j < hoogte; ++j)
   {
-    for (int i = 0; i < hoogte; ++i)
+    for (int i = 0; i < breedte; ++i)
     {
        cout << " " << ((bord[i][j]) ? to_string(bord[i][j]) : "_") << " ";
     }
@@ -179,9 +179,9 @@ void Puzzel::drukAfInhoud ()
 
 void Puzzel::drukAfOplossing (int oplossing[MaxDimensie][MaxDimensie])
 {
-  for (int j = 0; j < breedte; ++j)
+  for (int j = 0; j < hoogte; ++j)
   {
-    for (int i = 0; i < hoogte; ++i)
+    for (int i = 0; i < breedte; ++i)
     {
       cout << " " << oplossing[i][j] << " ";
     }
