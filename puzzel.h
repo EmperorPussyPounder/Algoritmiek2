@@ -196,8 +196,10 @@ class Puzzel
     my_set mogelijkeInputs(int x, int y);
     bool eindeSpel();
     bool bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie],
-                           long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst);
+                           long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst,
+                           int & aantalOplossingen, bool doorstroom = false);
     void sorteer(vector<pair<int,int>> lijst);
+
 };
 
 #endif

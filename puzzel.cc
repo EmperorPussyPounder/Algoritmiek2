@@ -268,6 +268,7 @@ bool Puzzel::bepaalOplossingBT (bool slim,
 {
   // TODO: maak deze invoerlijst elders aan en maak het een field van de class
   aantalDeeloplossingen = 0;
+  int  aantalOplossingen = 0;
   if(!erIsEenPuzzel) return false;
   vector<pair<int, int>> invoerLijst;
   for (int j = 0; j < hoogte; ++j)
@@ -278,14 +279,16 @@ bool Puzzel::bepaalOplossingBT (bool slim,
       invoerLijst.push_back(coordinaten);
     }
   }
+  bepaalOplossingBT(slim, oplossing,
+                           aantalDeeloplossingen, invoerLijst, aantalOplossingen);
 
 
-  return bepaalOplossingBT(slim, oplossing, aantalDeeloplossingen, invoerLijst);
-
+  return aantalOplossingen;
 }  // bepaalOplossingBT
 
 bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensie],
-                                long long &aantalDeeloplossingen, vector<pair<int,int>> invulVolgorde)
+                                long long &aantalDeeloplossingen, vector<pair<int,int>> invulVolgorde,
+                                int & aantalOplossingen, bool doorstroom)
 {
   ++aantalDeeloplossingen;
   if(slim) sorteer(invulVolgorde);
@@ -300,20 +303,23 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
         {
            if (vulWaardeIn(rij, kolom, waarde))
             {
-              if (bepaalOplossingBT(slim, oplossing, aantalDeeloplossingen, invulVolgorde))
-              {
-                haalWaardeWeg(rij, kolom);
-                return true;
-              }
+              auto succesvol = bepaalOplossingBT(slim, oplossing,
+                                                 aantalDeeloplossingen,
+                                                 invulVolgorde,
+                                                 aantalOplossingen, doorstroom);
               haalWaardeWeg(rij, kolom);
+              if (succesvol)
+              {
+                if(!doorstroom) return true;
+                drukAfOplossing(oplossing);
+                cout << "------------------------------------\n";
+              }
             }
         }
-
         return false;
       }
   }
 
-    //todo dit klopt nog niet helemaal
   for (int rij = 0; rij < hoogte; ++rij)
   {
     for (int kolom = 0; kolom < breedte; ++kolom)
@@ -321,7 +327,7 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
           oplossing[kolom][rij] = bord[kolom][rij];
     }
   }
-
+    ++aantalOplossingen;
     return true;
 }
 
@@ -335,9 +341,23 @@ int Puzzel::bepaalAlleOplossingenBT
        long long &aantalDeeloplossingen)
 {
   // TODO: implementeer deze memberfunctie
+  aantalDeeloplossingen = 0;
+  int aantalOplossingen = 0;
+  if(!erIsEenPuzzel) return false;
+  vector<pair<int, int>> invoerLijst;
+  for (int j = 0; j < hoogte; ++j)
+  {
+    for (int i = 0; i < breedte; ++i)
+    {
+      auto coordinaten = make_pair(i, j);
+      invoerLijst.push_back(coordinaten);
+    }
+  }
+  bepaalOplossingBT(slim, oplossing,
+                           aantalDeeloplossingen,
+                           invoerLijst, aantalOplossingen, true);
 
-  return 0;
-
+  return aantalOplossingen;
 }  // bepaalAlleOplossingenBT
 
 //*************************************************************************
