@@ -187,6 +187,7 @@ class Puzzel
 // bijvoorbeeld een 2-dimensionaal array voor de inhoud van de puzzel
     int bord[MaxDimensie][MaxDimensie];
     bool erIsEenPuzzel = false;
+    bool gretigBord = false;
     my_set keuzes;
     set<pair<int,int>> ingevuld;
 
@@ -194,11 +195,13 @@ class Puzzel
     my_set intersect(my_set A, my_set B);
 
     my_set mogelijkeInputs(int x, int y);
-    bool eindeSpel();
     bool bepaalOplossingBT(bool slim, int oplossing[MaxDimensie][MaxDimensie],
                            long long &aantalDeeloplossingen, vector<pair<int,int>> invoerLijst,
-                           int & aantalOplossingen, bool doorstroom = false);
+                           int & aantalOplossingen, bool doorstroom = false,
+                           vector<int> volgorde = GeenVolgorde);
+
     void sorteer(vector<pair<int,int>> lijst);
+    void resetBord();
 
 };
 
