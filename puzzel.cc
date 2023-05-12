@@ -350,10 +350,10 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
   my_set singleton;
   if (!volgorde.empty())
   {
-    singleton.insert(volgorde[0]);
+    singleton.insert(volgorde.back());
     for (auto & elem : volgorde) cout << elem << ", ";
     cout << endl;
-    volgorde.erase(volgorde.begin());
+    volgorde.pop_back();
     gretigBord = true;
   }
   if(slim) sorteer(invulVolgorde);
@@ -373,12 +373,12 @@ bool Puzzel::bepaalOplossingBT (bool slim, int oplossing[MaxDimensie][MaxDimensi
                                                invulVolgorde,
                                                aantalOplossingen, doorstroom,
                                                volgorde);
-            haalWaardeWeg(rij, kolom);
+            if(!succesvol || !gretigBord) haalWaardeWeg(rij, kolom);
             if (succesvol)
             {
-              if (gretigBord) {vulWaardeIn(rij, kolom, waarde);
+              if (gretigBord) cout << "Hier zou hij niet moeten verwijderen" << endl;
               drukAfInhoud();
-              cout << "------------------------------------\n";}
+              cout << "------------------------------------\n";
               if(!doorstroom) return true;
             }
           }
